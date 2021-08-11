@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- needed/style for the table view  -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tabs</title>
+    <link rel="stylesheet" type="text/css" href="vsqv-style.css">
+</head>
+<body>
+
+     <h1>SQLite: Insert, Select & Update </h1>
+     <div class ="aligncenter">
+         <form class="form">
+             <input type="hidden" id="field-id" value=""/>
+            <div class= "box">
+                <input type="text" id="field-name"/>
+                <label for="field-name">Name</label>
+            </div>
+
+            <div class= "box">
+                <input type="text" id="field-password"/>
+                <label for="field-password">Name</label>
+            </div>
+            <div class= "box">
+                <input type="text" id="field-email"/>
+                <label for="field-email">Name</label>
+            </div>
+
+            <div class="per"><a id="btn-save" class="button" >SAVE</a></div>
+            <div class="per"><a id="btn-DELETE" class="button" >DELETE</a></div>
+        </form>
+
+        <table id="table-register">
+            <thead>
+                <th>Name</th>
+                <th>Password</th>
+                <th>Email</th>
+            </thead>
+            <tbody id="tbody-register">
+
+            </tbody>
+        </table>
+     </div>
+        
+
+
+        
+<script src="dbconnection.js" type="text/javascript"></script> 
+<script src="vsqvApp.js"></script>
+<script src="database.js"></script>
+    
+</body>
+</html>

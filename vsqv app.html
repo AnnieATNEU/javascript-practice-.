@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<!-- needed/style for the table view  -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Tabs</title>
+    <link rel="stylesheet" type="text/css" href="vsqv-style.css">
+</head>
+<body style="padding: 20px">
+
+<!-- cohort selection Panel -->
+ <div class="cohortSelection">
+    <h2 class="div1">COHORT SELECTION</h2>
+    <form class="upperleft-form"action="/action_page.php">
+        <label for="displaytable">Table </label><br>
+        <input type="text" class="displaytable" id="tablechoosen" placeholder="sample 1" readonly><br>
+       <label for="vcfsample">Choose sample</label><br>
+        <select class="choosesample" name="sample">
+          <option value="allsamples">All samples</option>
+          <option value="sample">Sample1</option>
+          <option value="sample">Sample2</option>
+          <option value="sample">Sample3</option>
+          <option value="sample">Sample1,Sample2</option>
+          <option value="sample">Sample2,Sample3</option>
+          <option value="sample">Sample1,Sample3</option>
+        </select><br><br>
+
+        <div class="multiselect">
+            <div class="selectBox" onclick="showCheckboxes()">
+                <select>
+                    <option>Columns to show</option>
+                </select>
+                         <div class="overSelect"></div>
+           </div>
+           <div id="checkboxes">
+            <label for="COL"><input type="checkbox" id="col"/>All columns</label>
+            <label for="COL"><input type="checkbox" id="col"/>CHROM</label>
+            <label for="COL"><input type="checkbox" id="col"/>START</label>
+            <label for="COL"><input type="checkbox" id="col"/>END </label>
+            <label for="COL"><input type="checkbox" id="col"/>VAR_TYPE </label>
+            <label for="COL"><input type="checkbox" id="col"/>SAMPLE </label>
+            <label for="COL"><input type="checkbox" id="col"/>POS </label>
+            <label for="COL"><input type="checkbox" id="col"/>ID </label>
+            <label for="COL"><input type="checkbox" id="col"/>REF </label>
+            <label for="COL"><input type="checkbox" id="col"/>ALT1 </label>
+            <label for="COL"><input type="checkbox" id="col"/>ALT2 </label>
+            <label for="COL"><input type="checkbox" id="col"/>ALT3 </label>
+            <label for="COL"><input type="checkbox" id="col"/>QUAL </label>
+            <label for="COL"><input type="checkbox" id="col"/>FILTER </label>
+            <label for="COL"><input type="checkbox" id="col"/>INFO </label>
+            <label for="COL"><input type="checkbox" id="col"/>DP </label>
+            <label for="COL"><input type="checkbox" id="col"/>ADR </label>
+            <label for="COL"><input type="checkbox" id="col"/>ADF </label>
+            <label for="COL"><input type="checkbox" id="col"/>MUT </label>
+            <label for="COL"><input type="checkbox" id="col"/>AD </label>
+            <label for="COL"><input type="checkbox" id="col"/>ECNT =</label>
+            <label for="COL"><input type="checkbox" id="col"/>GERMQ </label>
+            <label for="COL"><input type="checkbox" id="col"/>AS_FilterStatus </label>
+            <label for="COL"><input type="checkbox" id="col"/>AF </label>
+            <label for="COL"><input type="checkbox" id="col"/>F1R2 </label>
+            <label for="COL"><input type="checkbox" id="col"/>F2R1 </label>
+            <label for="COL"><input type="checkbox" id="col"/>SB </label>
+            <label for="COL"><input type="checkbox" id="col"/>PGT </label>
+            <label for="COL"><input type="checkbox" id="col"/>PID </label>
+            <label for="COL"><input type="checkbox" id="col"/>PS </label>
+            <label for="COL"><input type="checkbox" id="col"/>GT </label>
+            <label for="COL"><input type="checkbox" id="col"/>STRQ </label>
+        </div>
+    </div>
+
+<script>
+    //for columns to show dropdown menu
+var expanded= false;
+function showCheckboxes() {
+    var checkboxes = document.getElementById("checkboxes");
+    if (!expanded){
+        checkboxes.style.display= "block";
+        expanded = true;
+    }else {
+        checkboxes.style.display = "none";
+        expanded = false;
+    }
+    }
+</script>
+
+
+         <label for="Subset">Subset:</label><br>
+         <input type="radio" class="subset" id="All" name="subset" value="all">
+         <label for="All">All</label><br>
+         <input type="radio" class="subset" id="Difference" name="subset" value="difference">
+         <label for="Difference">Difference</label><br>
+         <input type="radio" class="subset" id="Similar" name="subset" value="similar">
+         <label for="Similar">Similar</label><br>
+
+         
+        <label for="start">START :</label>
+        <input type="text" class="startend" id="start" placeholder="Enter number.." name="start">
+        <br>
+        <label for="end">END :</label>
+        <input type="text" class="startend" id="end" placeholder="Enter number.." name="end">
+<br>
+
+
+
+
+        <label for="vartype">Var_type</label><br>
+            <input id="search-input" class="form-control" placeholder="All type"  type="text">
+
+        <label for="src">Source file</label><br>
+        <input type="file" class="choosefile" name="file"/>
+        <input type="submit" class="upload" value="Upload"/>
+
+        <br>
+        <br>
+
+     
+      <button type="button" id="updateView" class="updateView">Update view</button>
+</form>
+</div>
+
+<!-- ////////////Table,Plot,IGV Panel -->
+<div class="tablePanel">
+    <h2 class="div2">(VSQV) Microbial Variants Storage, Query and Visualization</h2>   
+        <table class="table table-striped"> 
+                    <div class="row">
+                        <div class="col">
+                            <div class="card card-body">
+                                <input id="sample-search" class="form-control" placeholder="Search Sample.." type="text">
+                              
+                    
+                            </div>
+                    
+                            </div>
+                        </div>
+                  
+                            
+                <table class="table table-striped"> 
+                    <tr class="bg-info">
+                        <th  class="bg-info" data-colname="CHROM" data-order="desc">CHROM &#9650</th>
+                        <th  data-colname="START" data-order="desc">START &#9650</th>
+                        <th  data-colname="END" data-order="desc">END &#9650</th>
+                        <th  data-colname="VAR_TYPE" data-order="desc">VAR_TYPE &#9650</th>
+                        <th  data-colname="SAMPLE" data-order="desc">SAMPLE &#9650</th>
+                        <th  data-colname="REF" data-order="desc">REF &#9650</th>
+                        <th  data-colname="ALT" data-order="desc">ALT &#9650</th>
+                        <th  data-colname="FILTER_PASS" data-order="desc">FILTER_PASS &#9650</th>
+                        <th  data-colname="DP" data-order="desc">DP &#9650</th>
+                        <th  data-colname="ECNT" data-order="desc">ECNT &#9650</th>
+                        <th  data-colname="GERMQ" data-order="desc">GERMQ &#9650</th>
+                        <th  data-colname="MBQ_1" data-order="desc">MBQ_1 &#9650</th>
+                        <th  data-colname="MFRL_1" data-order="desc">MFRL_1 &#9650</th>
+                        <th  data-colname="MMQ_1" data-order="desc">MMQ_1 &#9650</th>
+                        <th  data-colname="MPOS_1" data-order="desc">MPOS_1 &#9650</th>
+                        <th  data-colname="PON" data-order="desc">PON &#9650</th>
+                        <th  data-colname="POPAF_1" data-order="desc">POPAF_1 &#9650</th>
+                        <th  data-colname="ROQ" data-order="desc">ROQ &#9650</th>
+                        <th  data-colname="RPA_1" data-order="desc">RPA_1 &#9650</th>
+                        <th  data-colname="RU" data-order="desc">RU &#9650</th>
+                        <th  data-colname="SEQQ" data-order="desc">SEQQ &#9650</th>
+                        <th  data-colname="STR" data-order="desc">STR &#9650</th>
+                        <th  data-colname="STRANDQ" data-order="desc">STRANDQ &#9650</th>
+                        <th  data-colname="STRQ" data-order="desc">STRQ &#9650</th>
+                        <th  data-colname="TLOD_1" data-order="desc">TLOD_1 &#9650</th>
+                    <tbody id="myTable">
+                        
+                    </tbody>
+                </table>
+                
+                
+<script>
+                var myArray = [                {'CHROM': "scaffold00004","START":"644","END": "645","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "T","ALT": "A","FILTER_PASS": "TRUE","DP": "242","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "0",
+"MFRL_1": "0",
+"MMQ_1": "60",
+"MPOS_1": "57",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "938.26",
+},
+{'CHROM': "scaffold00004","START":"1025","END": "1026","VAR_TYPE": "INDEL","SAMPLE":"SAMPLE1","REF": "A","ALT": "AT","FILTER_PASS": "TRUE","DP": "195","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "40",
+"MFRL_1": "629",
+"MMQ_1": "60",
+"MPOS_1": "43",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "12",
+"RU": "T",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "93",
+"TLOD_1": "309.74",
+},
+{'CHROM': "scaffold00004","START":"2338","END": "2339","VAR_TYPE": "INDEL","SAMPLE":"SAMPLE1","REF": "T","ALT": "TCA","FILTER_PASS": "TRUE","DP": "215","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "39",
+"MFRL_1": "500",
+"MMQ_1": "60",
+"MPOS_1": "58",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "893.43",
+},
+{'CHROM': "scaffold00004","START":"3295","END": "3296","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "T","ALT": "G","FILTER_PASS": "TRUE","DP": "218","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "0",
+"MFRL_1": "0",
+"MMQ_1": "60",
+"MPOS_1": "60",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "796.42",
+},
+{'CHROM': "scaffold00004","START":"3822","END": "3823","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "A","ALT": "G","FILTER_PASS": "TRUE","DP": "181","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "0",
+"MFRL_1": "0",
+"MMQ_1": "60",
+"MPOS_1": "61",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "723.98",
+},
+{'CHROM': "scaffold00004","START":"4653","END": "4654","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "G","ALT": "T","FILTER_PASS": "FALSE","DP": "68","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "541",
+"MMQ_1": "60",
+"MPOS_1": "0",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "11.46",
+},
+{'CHROM': "scaffold00004","START":"8915","END": "8916","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "C","ALT": "A","FILTER_PASS": "TRUE","DP": "188","ECNT": "2",
+"GERMQ": "-1",
+"MBQ_1": "12",
+"MFRL_1": "508",
+"MMQ_1": "60",
+"MPOS_1": "57",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "718.55",
+},
+{'CHROM': "scaffold00004","START":"8951","END": "8952","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "G","ALT": "C","FILTER_PASS": "TRUE","DP": "198","ECNT": "2",
+"GERMQ": "-1",
+"MBQ_1": "0",
+"MFRL_1": "0",
+"MMQ_1": "60",
+"MPOS_1": "48",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "759.74",
+},
+{'CHROM': "scaffold00004","START":"11573","END": "11574","VAR_TYPE": "SNP","SAMPLE":"SAMPLE1","REF": "T","ALT": "G","FILTER_PASS": "TRUE","DP": "114","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "36",
+"MFRL_1": "547",
+"MMQ_1": "60",
+"MPOS_1": "23",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.18",
+},
+{'CHROM': "scaffold00004","START":"11581","END": "11582","VAR_TYPE": "SNP","SAMPLE":"SAMPLE2","REF": "C","ALT": "G","FILTER_PASS": "FALSE","DP": "128","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "32",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.16",
+},
+{'CHROM': "scaffold00004","START":"11582","END": "11583","VAR_TYPE": "SNP","SAMPLE":"SAMPLE2","REF": "TA","ALT": "T","FILTER_PASS": "TRUE","DP": "135","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "40",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "36",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "TRUE",
+"STRANDQ": "-1",
+"STRQ": "93",
+"TLOD_1": "171.22",
+},
+{'CHROM': "scaffold00004","START":"13722","END": "13723","VAR_TYPE": "SNP","SAMPLE":"SAMPLE2","REF": "A","ALT": "C","FILTER_PASS": "TRUE","DP": "163","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "0",
+"MFRL_1": "0",
+"MMQ_1": "60",
+"MPOS_1": "58",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "628.32",
+},
+{'CHROM': "scaffold00004","START":"1025","END": "1026","VAR_TYPE": "INDEL","SAMPLE":"SAMPLE2","REF": "A","ALT": "AT","FILTER_PASS": "TRUE","DP": "195","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "40",
+"MFRL_1": "629",
+"MMQ_1": "60",
+"MPOS_1": "43",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "12",
+"RU": "T",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "93",
+"TLOD_1": "309.74",
+},
+{'CHROM': "scaffold00004","START":"3215","END": "3216","VAR_TYPE": "INDEL","SAMPLE":"SAMPLE2","REF": "A","ALT": "AT","FILTER_PASS": "TRUE","DP": "195","ECNT": "1",
+"GERMQ": "-1",
+"MBQ_1": "40",
+"MFRL_1": "629",
+"MMQ_1": "60",
+"MPOS_1": "43",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "12",
+"RU": "T",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "93",
+"TLOD_1": "309.74",
+},
+{'CHROM': "scaffold00004","START":"11581","END": "11582","VAR_TYPE": "SNP","SAMPLE":"SAMPLE3","REF": "C","ALT": "G","FILTER_PASS": "FALSE","DP": "128","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "32",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.16",
+},
+{'CHROM': "scaffold00004","START":"321","END": "322","VAR_TYPE": "SNP","SAMPLE":"SAMPLE3","REF": "C","ALT": "G","FILTER_PASS": "FALSE","DP": "128","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "32",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.16",
+},
+{'CHROM': "scaffold00004","START":"1098","END": "1099","VAR_TYPE": "SNP","SAMPLE":"SAMPLE3","REF": "C","ALT": "G","FILTER_PASS": "FALSE","DP": "128","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "32",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.16",
+},
+{'CHROM': "scaffold00004","START":"1180","END": "1181","VAR_TYPE": "SNP","SAMPLE":"SAMPLE3","REF": "C","ALT": "G","FILTER_PASS": "FALSE","DP": "128","ECNT": "3",
+"GERMQ": "-1",
+"MBQ_1": "34",
+"MFRL_1": "534",
+"MMQ_1": "60",
+"MPOS_1": "32",
+"PON": "FALSE",
+"POPAF_1": "7.3",
+"ROQ": "",
+"RPA_1": "-1",
+"RU": "",
+"SEQQ": "-1",
+"STR": "FALSE",
+"STRANDQ": "-1",
+"STRQ": "-1",
+"TLOD_1": "3.16",
+},
+]
+      $('#sample-search').on('keyup', function(){
+                  var value = $(this).val()
+                  console.log('Value:', value)
+                  var data = searchTable(value, myArray)
+                  buildTable(data)
+                })
+                
+                
+                buildTable(myArray)
+                 
+                function searchTable(value,data ){
+                  var filteredData1 = []
+                   for (var i = 0; i< data.length; i++){
+                       value = value.toLowerCase()
+                       var sample = data[i].SAMPLE.toLowerCase()
+                
+                       if (sample.includes(value)){
+                           filteredData1.push(data[i])
+                       }
+                   }
+                
+                
+                
+                  return filteredData1
+                }
+
+                // //<!--// ////////////////////////////////////////////////////////////////////////////-->
+                //     $('#search-input').on('keyup', function(){
+                //   var value = $(this).val()
+                //   console.log('Value:', value)
+                //   var data1 = searchTable(value, myArray)
+                //   buildTable(data1)
+                // })
+                
+                
+                // buildTable(myArray)
+                 
+                // function searchTable(value,data1 ){
+                //   var filteredData = []
+                //    for (var i = 0; i< data1.length; i++){
+                //        value = value.toLowerCase()
+                //        var VarType = data1[i].VAR_TYPE.toLowerCase()
+                
+                //        if (VarType.includes(value)){
+                //            filteredData.push(data1[i])
+                //        }
+                //    }
+                
+                
+                
+                //   return filteredData
+                // }
+
+   // <!--///////////////////////////////////////////////////////////////////////////////-->
+                
+                 $('th').on('click', function(){
+                     var column = $(this).data('colname')
+                     var order = $(this).data('order')
+                     var text = $(this).html()
+                     text = text.substring(0, text.length - 1);
+                     
+                     
+                     
+                     if (order == 'desc'){
+                        myArray = myArray.sort((a, b) => a[column] > b[column] ? 1 : -1)
+                        $(this).data("order","asc");
+                        text += '&#9660'
+                     }else{
+                        myArray = myArray.sort((a, b) => a[column] < b[column] ? 1 : -1)
+                        $(this).data("order","desc");
+                        text += '&#9650'
+                     }
+                
+                    $(this).html(text)
+                    buildTable(myArray)
+                    })
+                
+                
+                
+                 $('th').on('click', function(){
+                     var column = $(this).data('colname')
+                     var order = $(this).data('order')
+                     var text = $(this).html()
+                     text = text.substring(0, text.length - 1);
+                     
+                     
+                     
+                     if (order == 'desc'){
+                        myArray = myArray.sort((a, b) => a[column] > b[column] ? 1 : -1)
+                        $(this).data("order","asc");
+                        text += '&#9660'
+                     }else{
+                        myArray = myArray.sort((a, b) => a[column] < b[column] ? 1 : -1)
+                        $(this).data("order","desc");
+                        text += '&#9650'
+                     }
+                
+                    $(this).html(text)
+                    buildTable(myArray)
+                    })
+                
+                
+                   
+                 
+                    
+                function buildTable(data){
+                    var table = document.getElementById('myTable')
+                    table.innerHTML = ''
+                    for (var i = 0; i < data.length; i++){
+                        var CHROM = `CHROM-${i}`
+                        var START = `START-${i}`
+                        var END = `END-${i}`
+                        var VAR_TYPE = `VAR_TYPE-${i}`
+                        var SAMPLE = `SAMPLE-${i}`
+                        var REF = `REF-${i}`
+                        var ALT = `ALT-${i}`
+                        var FILTER_PASS = `FILTER_PASS-${i}`
+                        var DP = `DP-${i}`
+                        var ECNT = `ECNT-${i}`
+                        var GERMQ = `GERMQ-${i}`
+                        var MBQ_1 = `MBQ_1-${i}`
+                        var MFRL_1 = `MFRL_1-${i}`
+                        var MMQ_1 = `MMQ_1-${i}`
+                        var MPOS_1 = `MPOS_1-${i}`
+                        var PON = `PON-${i}`
+                        var POPAF_1 = `POPAF_1-${i}`
+                        var ROQ = `ROQ-${i}`
+                        var RPA_1 = `RPA_1-${i}`
+                        var RU = `RU-${i}`
+                        var SEQQ = `SEQQ-${i}`
+                        var STR = `STR-${i}`
+                        var STRANDQ = `STRANDQ-${i}`
+                        var STRQ = `STRQ-${i}`
+                        var TLOD_1 = `TLOD_1-${i}`
+                
+
+                        var row = `<tr>
+                                        <td>${data[i].CHROM}</td>
+                                        <td>${data[i].START}</td>
+                                        <td>${data[i].END}</td>
+                                        <td>${data[i].VAR_TYPE}</td>
+                                        <td>${data[i].SAMPLE}</td>
+                                        <td>${data[i].REF}</td>
+                                        <td>${data[i].ALT}</td>
+                                        <td>${data[i].FILTER_PASS}</td>
+                                        <td>${data[i].DP}</td>
+                                        <td>${data[i].ECNT}</td>
+                                        <td>${data[i].GERMQ}</td>
+                                        <td>${data[i].MBQ_1}</td>
+                                        <td>${data[i].MFRL_1}</td>
+                                        <td>${data[i].MMQ_1}</td>
+                                        <td>${data[i].MPOS_1}</td>
+                                        <td>${data[i].PON}</td>
+                                        <td>${data[i].POPAF_1}</td>
+                                        <td>${data[i].ROQ}</td>
+                                        <td>${data[i].RPA_1}</td>
+                                        <td>${data[i].RU}</td>
+                                        <td>${data[i].SEQQ}</td>
+                                        <td>${data[i].STR}</td>
+                                        <td>${data[i].STRANDQ}</td>
+                                        <td>${data[i].STRQ}</td>
+                                        <td>${data[i].TLOD_1}</td>
+
+                       
+
+                                   </tr>`
+                        table.innerHTML += row
+                    }
+                }
+                
+                </script>
+             </div>
+            </div>
+
+        </div>
+
+        
+<script src="dbconnection.js" type="text/javascript"></script> 
+<script src="vsqvApp.js"></script>
+<script src="database.js"></script>
+<script src="createTable.js"></script>
+    
+</body>
+</html>
